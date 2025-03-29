@@ -3,6 +3,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import Image from "next/image";
 import _ from "lodash";
 import { Status, todo } from "@prisma/client";
+import Snackbar from "@mui/material/Snackbar";
 import { useState } from "react";
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import {
   Select,
   SelectContent,
@@ -68,7 +70,14 @@ export default function Home() {
   const [name, setName] = useState("");
   const [status, setStatus] = useState("TODO");
   const [id, setId] = useState("");
-  if (loading) return <div>Түр хүлээнэ үү!</div>;
+  if (loading)
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={loading || loading2 || loading3 || loading4}
+        message="Түр хүлээнэ үү!"
+      />
+    );
   if (error) return <div>Алдаа гарлааа</div>;
   // const statusss = [
   //   { type: "Төлөвлөж байгаа" },
@@ -121,6 +130,11 @@ export default function Home() {
     <div className="">
       <div>
         <Dialog>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={loading || loading2 || loading3 || loading4}
+            message="Түр хүлээнэ үү!"
+          />
           <DialogTrigger>
             <div className=" text-foreground">Todo нэмэх</div>
           </DialogTrigger>
