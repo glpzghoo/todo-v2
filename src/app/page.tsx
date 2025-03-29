@@ -62,11 +62,9 @@ const STATUSES = [
 ];
 export default function Home() {
   const { data, error, loading } = useQuery(GET_TODOS);
-  const [addNew, { loading: loading2, error: error2 }] = useMutation(addtodo);
-  const [edittodo, { loading: loading3, error: error3 }] =
-    useMutation(edittodoopoooo);
-  const [deleteTodo, { loading: loading4, error: error4 }] =
-    useMutation(deleteTodooo);
+  const [addNew, { loading: loading2 }] = useMutation(addtodo);
+  const [edittodo, { loading: loading3 }] = useMutation(edittodoopoooo);
+  const [deleteTodo, { loading: loading4 }] = useMutation(deleteTodooo);
   const [name, setName] = useState("");
   const [status, setStatus] = useState("TODO");
   const [id, setId] = useState("");
