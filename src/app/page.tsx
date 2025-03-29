@@ -198,7 +198,11 @@ export default function Home() {
                               <SelectValue placeholder="Статусаа сонгоно уу!">
                                 {status === "TODO"
                                   ? "Төлөвлөж байгаа"
-                                  : "Одоо хийж байгаа"}
+                                  : status === "INPROGRESS"
+                                  ? "Одоо хийж байгаа"
+                                  : status === "DONE"
+                                  ? "Дууссан"
+                                  : "Больсон"}
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
