@@ -3,7 +3,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { ReactNode } from "react";
 
 const client = new ApolloClient({
-  uri: "https://todo-graphql-backend.glpzghoo.space",
+  uri: process.env.NEXT_PUBLIC_BACKEND_URL,
   cache: new InMemoryCache(),
 });
 
