@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 const allUsers = gql`
   query allUsers {
+    message
+    code
+    success
     users {
       id
       username
