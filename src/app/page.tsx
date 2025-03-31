@@ -6,20 +6,19 @@ import axios from "axios";
 import { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 const allUsers = gql`
-type query allUsers{
-  users{
-    id
-    username
-    todo {
+  query allUsers {
+    users {
       id
-      description
-      isDone
-      priority
-      taskName
-
+      username
+      todo {
+        id
+        description
+        isDone
+        priority
+        taskName
+      }
     }
   }
-}
 `;
 
 // const jwtCookie =
