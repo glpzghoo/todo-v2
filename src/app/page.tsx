@@ -1,5 +1,5 @@
 "use client";
 
 export default function Home() {
-  return;
+  return <div>still working on it :)</div>;
 }
