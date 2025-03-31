@@ -7,18 +7,20 @@ import { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 const allUsers = gql`
   query allUsers {
-    message
-    code
-    success
     users {
-      id
-      username
-      todo {
+      message
+      code
+      success
+      users {
         id
-        description
-        isDone
-        priority
-        taskName
+        username
+        todo {
+          id
+          description
+          isDone
+          priority
+          taskName
+        }
       }
     }
   }
