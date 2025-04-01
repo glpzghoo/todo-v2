@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Charm,
+  Charmonman,
+  Cookie,
+  Geist,
+  Geist_Mono,
+  Great_Vibes,
+  Lobster,
+  Lugrasimo,
+  LXGW_WenKai_TC,
+  Marck_Script,
+  Montserrat,
+  Yanone_Kaffeesatz,
+} from "next/font/google";
 import "./globals.css";
 import { ApolloClientProvide } from "@/lib/apolloclient";
 
@@ -17,7 +30,10 @@ export const metadata: Metadata = {
   title: "TODOOOOOOOO",
   description: "yes todo",
 };
-
+const montserrate = LXGW_WenKai_TC({
+  subsets: ["latin"],
+  weight: "400",
+});
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrate.className} antialiased`}
       >
         <ApolloClientProvide>{children}</ApolloClientProvide>
       </body>

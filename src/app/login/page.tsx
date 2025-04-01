@@ -10,7 +10,7 @@ import { ImSpinner10 } from "react-icons/im";
 import Loading from "../components/loading";
 import setCookie from "../components/server_action/setCookie";
 import { useRouter } from "next/navigation";
-const LOGIN_USER = gql`
+export const LOGIN_USER = gql`
   mutation Mutation($username: String!, $password: String!) {
     loginUser(username: $username, password: $password) {
       JWT
@@ -102,7 +102,7 @@ export default function Login() {
         open={!!error && alert}
         message={error && error.message}
       />
-      <div className="flex flex-col w-2/5 gap-8 p-20 bg-secondary shadow-2xl rounded-lg">
+      <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg">
         <div className="flex flex-col gap-3">
           <Label htmlFor="username">Хэрэглэгчийн нэр</Label>
           <Input
