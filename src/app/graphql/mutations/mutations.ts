@@ -106,3 +106,27 @@ export const UPDATE_STATUS = gql`
     }
   }
 `;
+export const LOGIN_USER = gql`
+  mutation Mutation($username: String!, $password: String!) {
+    loginUser(username: $username, password: $password) {
+      JWT
+      code
+      message
+      success
+      user {
+        username
+        todo {
+          description
+          id
+          isDone
+          priority
+          taskName
+          tag {
+            name
+            id
+          }
+        }
+      }
+    }
+  }
+`;
