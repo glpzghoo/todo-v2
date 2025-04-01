@@ -10,30 +10,8 @@ import { ImSpinner10 } from "react-icons/im";
 import Loading from "../components/loading";
 import setCookie from "../components/server_action/setCookie";
 import { useRouter } from "next/navigation";
-export const LOGIN_USER = gql`
-  mutation Mutation($username: String!, $password: String!) {
-    loginUser(username: $username, password: $password) {
-      JWT
-      code
-      message
-      success
-      user {
-        username
-        todo {
-          description
-          id
-          isDone
-          priority
-          taskName
-          tag {
-            name
-            id
-          }
-        }
-      }
-    }
-  }
-`;
+import { LOGIN_USER } from "../graphql/mutations/mutations";
+
 type todo = {
   description: string;
   id: string;
