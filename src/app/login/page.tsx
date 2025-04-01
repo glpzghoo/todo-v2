@@ -67,10 +67,16 @@ export default function Login() {
   };
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     if (loginResponse) {
       setCookie(loginResponse);
-      router.push("/");
+      timeout = setTimeout(() => {
+        router.push("/");
+      }, 1000);
     }
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [loginResponse]);
 
   return (
