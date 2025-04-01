@@ -65,20 +65,15 @@ export default function Login() {
       setAlert(true);
     }
   };
-
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (loginResponse) {
-      setCookie(loginResponse);
-      timeout = setTimeout(() => {
-        router.push("/");
-      }, 1000);
-    }
-    return () => {
-      clearTimeout(timeout);
-    };
+    redirect();
   }, [loginResponse]);
-
+  async function redirect() {
+    if (loginResponse) {
+      await setCookie(loginResponse);
+      router.push("/");
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Snackbar
