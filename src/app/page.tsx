@@ -297,7 +297,8 @@ export default function Home() {
                           disabled={
                             addNewLoading ||
                             form.taskName.length < 5 ||
-                            form.description.length < 5
+                            form.description.length < 5 ||
+                            form.tagId.length < 5
                           }
                           onClick={addNewTask}
                         >
