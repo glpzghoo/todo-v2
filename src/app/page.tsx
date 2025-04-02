@@ -294,7 +294,11 @@ export default function Home() {
                       <div className="w-full flex justify-center">
                         <MuiButton
                           sx={{ color: "black" }}
-                          disabled={addNewLoading}
+                          disabled={
+                            addNewLoading ||
+                            form.taskName.length < 5 ||
+                            form.description.length < 5
+                          }
                           onClick={addNewTask}
                         >
                           {addNewLoading ? <Loading /> : "Нэмэх"}

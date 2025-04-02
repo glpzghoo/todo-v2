@@ -285,7 +285,15 @@ export default function Card({
                 </div>
                 <DialogClose asChild>
                   <div className="w-full">
-                    <Button onClick={editTodo} className="w-full bg-red-500">
+                    <Button
+                      disabled={
+                        form.taskName.length < 5 ||
+                        form.description.length < 5 ||
+                        loadingUpdateTodo
+                      }
+                      onClick={editTodo}
+                      className="w-full bg-red-500"
+                    >
                       {loadingUpdateTodo ? <Loading /> : "Засах"}
                     </Button>
                   </div>
