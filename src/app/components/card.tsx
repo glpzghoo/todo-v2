@@ -215,7 +215,7 @@ export default function Card({
                         };
                       });
                     }}
-                    defaultValue={todo.taskName}
+                    value={form.taskName}
                     id="taskName"
                   />
                 </div>
@@ -231,7 +231,7 @@ export default function Card({
                       });
                     }}
                     id="description"
-                    defaultValue={todo.description}
+                    value={form.description}
                   />
                 </div>
                 <div className="">
@@ -260,7 +260,7 @@ export default function Card({
                     <Loading />
                   ) : (
                     <Select
-                      defaultValue={todo.tag.id}
+                      value={form.tagId}
                       onValueChange={(e) => {
                         setForm((p) => {
                           return {
