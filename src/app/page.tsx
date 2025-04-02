@@ -241,23 +241,26 @@ export default function Home() {
                         }
                       />
                     </div>
-                    <div className="flex justify-evenly">
-                      {[...Array(5)].map((a, i) => (
-                        <div key={i} className="flex">
-                          <Checkbox
-                            checked={i + 1 === form.priority}
-                            onChange={(e) =>
-                              setForm((prev) => {
-                                return {
-                                  ...prev,
-                                  priority: i + 1,
-                                };
-                              })
-                            }
-                          />
-                          <Label>{i + 1}</Label>
-                        </div>
-                      ))}
+                    <div>
+                      <div>Хэр чухал вэ?</div>
+                      <div className="flex justify-evenly">
+                        {[...Array(5)].map((a, i) => (
+                          <div key={i} className="flex">
+                            <Checkbox
+                              checked={i + 1 === form.priority}
+                              onChange={(e) =>
+                                setForm((prev) => {
+                                  return {
+                                    ...prev,
+                                    priority: i + 1,
+                                  };
+                                })
+                              }
+                            />
+                            <Label>{i + 1}</Label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       {loadingTAGS ? (
