@@ -12,6 +12,7 @@ import {
   CANCEL_TODO,
   FETCH_TAGS,
   UPDATE_STATUS,
+  UPDATE_TODO,
 } from "../graphql/mutations/mutations";
 import { calculateTime } from "@/lib/utils";
 import {
@@ -49,14 +50,17 @@ export default function Card({
 
   const router = useRouter();
   const [updateStatus, { loading, error }] = useMutation(UPDATE_STATUS);
+  const [updateTodo, { loading: loadingUpdateTodo, error: errorUpdateTodo }] =
+    useMutation(UPDATE_TODO);
 
   const [cancelTodo, { loading: loadingCancelTodo, error: errorCancelTodo }] =
     useMutation(CANCEL_TODO);
   const [form, setForm] = useState<form>({
-    taskName: "",
-    description: "",
-    tagId: "",
-    priority: 5,
+    taskName: todo.description,
+    description: todo.description,
+    tagId: todo.tag.id,
+    priority: todo.priority,
+    id: todo.id,
   });
   const handleStatus = async () => {
     const jwt = await GETJWT();
@@ -88,6 +92,18 @@ export default function Card({
       console.error(er, "aldaa");
     }
   };
+  const editTodo = async () => {
+    const jwt = await GETJWT();
+    if (!jwt) return;
+    try {
+      const res = await updateTodo({ variables: { ...form, jwt } });
+      if (res.data) {
+        setRefresh((prev) => !prev);
+      }
+    } catch (err) {
+      console.error(err, "aldaa");
+    }
+  };
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
@@ -101,6 +117,7 @@ export default function Card({
       setTags(data.tag.tags);
     }
   }, [data]);
+  // console.log(form);
   return (
     <div
       className={`card w-48  md:w-72 lg:w-80 bg-base-100 card-xs max-h-96 overflow-hidden shadow-md  transition-all duration-300 p-6 rounded-2xl relative ${
@@ -159,12 +176,13 @@ export default function Card({
                 <div className="text-green-400 text-lg">
                   <LuCircleAlert title="Цуцласан" />
                 </div>
-              ) : loading ? (
+              ) : loading && loadingCancelTodo ? (
                 <div className="text-xs">
                   <Loading />
                 </div>
               ) : (
                 <div className=" text-sm">
+                  {/* 2 */}
                   {loadingCancelTodo ? (
                     <div className="text-xs">
                       <Loading />
@@ -179,21 +197,7 @@ export default function Card({
               )}
             </div>
             <Dialog>
-              <DialogTrigger
-                className="flex justify-center"
-                onClick={() => {
-                  setForm((prev) => {
-                    return {
-                      ...prev,
-                      taskName: todo.taskName,
-                      description: todo.description,
-                      tagId: todo.tag.id,
-                      priority: todo.priority,
-                    };
-                  });
-                }}
-                asChild
-              >
+              <DialogTrigger className="flex justify-center" asChild>
                 <Muibutton sx={{ color: "red" }}>Засах</Muibutton>
               </DialogTrigger>
               <DialogContent>
@@ -202,35 +206,61 @@ export default function Card({
                 </DialogTitle>
                 <div>
                   <Label htmlFor="taskName">Даалгаврын нэр?</Label>
-                  <Input defaultValue={todo.taskName} id="taskName" />
+                  <Input
+                    onChange={(e) => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          taskName: e.target.value,
+                        };
+                      });
+                    }}
+                    defaultValue={todo.taskName}
+                    id="taskName"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="description">Тайлбар</Label>
-                  <Textarea id="description" defaultValue={todo.description} />
+                  <Textarea
+                    onChange={(e) => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          description: e.target.value,
+                        };
+                      });
+                    }}
+                    id="description"
+                    defaultValue={todo.description}
+                  />
                 </div>
-                <div className="flex justify-evenly">
-                  {[...Array(5)].map((a, i) => (
-                    <div key={i} className="flex">
-                      <Checkbox
-                        onChange={() => {
-                          setForm((p) => {
-                            return {
-                              ...p,
-                              priority: i + 1,
-                            };
-                          });
-                        }}
-                        checked={i + 1 === form.priority}
-                      />
-                      <Label>{i + 1}</Label>
-                    </div>
-                  ))}
+                <div className="">
+                  <div>Хэр чухал вэ?</div>
+                  <div className="flex justify-evenly">
+                    {[...Array(5)].map((a, i) => (
+                      <div key={i} className="flex">
+                        <Checkbox
+                          onChange={() => {
+                            setForm((p) => {
+                              return {
+                                ...p,
+                                priority: i + 1,
+                              };
+                            });
+                          }}
+                          checked={i + 1 === form.priority}
+                        />
+                        <Label>{i + 1}</Label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div>
-                  {false ? (
+                  {loadingTAGS ? (
                     <Loading />
                   ) : (
                     <Select
+                      defaultValue={todo.tag.id}
                       onValueChange={(e) => {
                         setForm((p) => {
                           return {
@@ -255,8 +285,8 @@ export default function Card({
                 </div>
                 <DialogClose asChild>
                   <div className="w-full">
-                    <Button className="w-full bg-red-500">
-                      {false ? <Loading /> : "Засах"}
+                    <Button onClick={editTodo} className="w-full bg-red-500">
+                      {loadingUpdateTodo ? <Loading /> : "Засах"}
                     </Button>
                   </div>
                 </DialogClose>

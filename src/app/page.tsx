@@ -115,7 +115,7 @@ export default function Home() {
     }
     try {
       const res = await addTodo({ variables: { ...form, jwt } });
-      console.log(res);
+      // console.log(res);
       if (res.data) {
         setRefresh((p) => !p);
       }

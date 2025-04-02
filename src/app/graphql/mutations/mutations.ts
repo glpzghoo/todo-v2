@@ -130,3 +130,48 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+export const RESIGSTER = gql`
+  mutation Mutation($username: String!, $password: String!) {
+    newUser(username: $username, password: $password) {
+      code
+      message
+      success
+      user {
+        username
+        id
+      }
+    }
+  }
+`;
+export const UPDATE_TODO = gql`
+  mutation Mutation(
+    $id: String!
+    $jwt: String!
+    $description: String
+    $tagId: String
+    $priority: Int
+    $taskName: String
+  ) {
+    updateTodo(
+      id: $id
+      jwt: $jwt
+      description: $description
+      priority: $priority
+      taskName: $taskName
+      tagId: $tagId
+    ) {
+      code
+      message
+      success
+      todo {
+        cancelled
+        createdAt
+        description
+        id
+        priority
+        isDone
+        taskName
+      }
+    }
+  }
+`;
