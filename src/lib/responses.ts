@@ -63,3 +63,39 @@ export const NextResponse_NotAdmin = (): NextResponse => {
     frontend_editing: false,
   });
 };
+
+export type user = {
+  id: string;
+  username: string;
+};
+export type todo = {
+  description: string;
+  id: string;
+  isDone: boolean;
+  priority: number;
+  taskName: string;
+  cancelled: boolean;
+  createdAt: string;
+  tag: tag;
+  user: user;
+};
+export type tag = {
+  name: string;
+  id: string;
+};
+export type Response = {
+  userTodo: {
+    code: string;
+    message: string;
+    success: boolean;
+    todos: todo[];
+    user: user;
+  };
+};
+export type form = {
+  taskName: string;
+  description: string;
+  tagId: string;
+  priority: number;
+  id?: string;
+};
