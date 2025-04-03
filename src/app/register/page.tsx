@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loading from "../components/loading";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER, RESIGSTER } from "../graphql/mutations/mutations";
+import { LOGIN_USER, RESIGSTER } from "../graphql/mutationsQueries/mutations";
 import Link from "next/link";
 
 export default function Register() {

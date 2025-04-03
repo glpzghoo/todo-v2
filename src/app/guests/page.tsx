@@ -1,18 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import SetCookieButton from "./components/setCookieButton";
-import { useEffect, useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { HiLogout } from "react-icons/hi";
-import Login from "./login/page";
-import GETJWT from "./components/server_action/getUserInfo";
-import Loading from "./components/loading";
-import { Checkbox, Snackbar, Button as MuiButton } from "@mui/material";
-import Card from "./components/card";
+import { form, tag, todo } from "@/lib/responses";
+import { Snackbar, Button as MuiButton, Checkbox } from "@mui/material";
 import { useRouter } from "next/navigation";
-import _ from "lodash";
-import { motion } from "framer-motion";
-import DateComponent from "./components/date";
+import { useEffect, useState } from "react";
+import DateComponent from "../components/date";
 import {
   Dialog,
   DialogClose,
@@ -20,9 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import Loading from "../components/loading";
 import {
   Select,
   SelectContent,
@@ -30,34 +22,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Card from "../components/card";
+import { motion } from "framer-motion";
+import { useMutation, useQuery } from "@apollo/client";
 import {
-  addNew,
+  ADD_GUEST_TODO,
   FETCH_TAGS,
-  USER_TODO,
-} from "./graphql/mutationsQueries/mutations";
-import { form, Response, tag, todo } from "@/lib/responses";
-import { Logout } from "./components/server_action/logout";
+  FETCH_TODOS,
+} from "../graphql/mutationsQueries/mutations";
 
-export default function Home() {
+export default function Guest() {
+  const {
+    data: GuestTodos,
+    error: errorGuestTodosQuery,
+    loading: loadingGuestTodosQuery,
+  } = useQuery(FETCH_TODOS);
   const { data, error: errorTAGS, loading: loadingTAGS } = useQuery(FETCH_TAGS);
-  const [addTodo, { loading: addNewLoading, error: addNewError }] =
-    useMutation(addNew);
-  const [userTodo, { error, loading: uselessLoading }] = useMutation(USER_TODO);
+  const [
+    addNewGuestTodo,
+    { error: errorAddNewGuestTodo, loading: loadingAddNewGuestTodo },
+  ] = useMutation(ADD_GUEST_TODO);
   const [alert, setAlert] = useState(false);
   const router = useRouter();
   const [isUserLoggedin, setIsUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [response, setResponse] = useState<Response>();
   const [expand1, setExpand1] = useState(false);
+  const [isValid, setIsValid] = useState(true);
   const [expand2, setExpand2] = useState(false);
   const [waiting, setWaiting] = useState(false);
-  const [isValid, setIsValid] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
   const [groupOne, setGroupOne] = useState<todo[]>([]);
   const [groupTwo, setGroupTwo] = useState<todo[]>([]);
   const [groupThree, setGroupThree] = useState<todo[]>([]);
-  const [loggingout, setLogout] = useState(false);
   const [tags, setTags] = useState<tag[]>([]);
   const [form, setForm] = useState<form>({
     taskName: "",
@@ -66,121 +63,100 @@ export default function Home() {
     priority: 5,
   });
   useEffect(() => {
-    if (response) {
-      if (response.userTodo.todos.length > 0) {
-        const check = response.userTodo.todos.some(
-          (guest: todo) => guest.taskName === form.taskName
-        );
-        if (check) {
-          setIsValid(false);
-        } else {
-          setIsValid(true);
-        }
-      }
+    if (data) {
+      setTags(data.tag.tags);
     }
-  }, [form.taskName]);
-  useEffect(() => {
-    const checking = async () => {
-      const userloggedin = await GETJWT();
-      setIsUserLoggedIn(!!userloggedin);
-      if (!userloggedin) {
-        router.push("/login");
-        return;
-      }
-
-      try {
-        const res = await userTodo({ variables: { jwt: userloggedin } });
-        const todos: todo[] = res.data.userTodo.todos;
-        const group1 = todos.filter(
-          (todo) => todo.isDone === true && todo.cancelled === false
-        );
-        const group2 = todos.filter(
-          (todo) => todo.isDone !== true && todo.cancelled === false
-        );
-        const group3 = todos.filter((todo) => todo.cancelled === true);
-        setGroupOne(group1);
-        setGroupTwo(group2);
-        setGroupThree(group3);
-        setResponse(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setAlert(true);
-        setLoading(false);
-      }
-    };
-    checking();
-  }, [refresh]);
+  }, [data]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
-    }, 5000);
+    }, 4000);
     return () => {
       clearTimeout(timeout);
     };
   }, [alert]);
   useEffect(() => {
-    if (data) {
-      setTags(data.tag.tags);
-    }
-  }, [data]);
-  const addNewTask = async () => {
-    setWaiting(true);
-    const jwt = await GETJWT();
-    if (!jwt) {
-      setWaiting(false);
-      return;
-    }
-    try {
-      const res = await addTodo({ variables: { ...form, jwt } });
-      // console.log(res);
-      if (res.data) {
-        setRefresh((p) => !p);
+    if (GuestTodos?.guests?.length > 0) {
+      const check = GuestTodos.guests.some(
+        (guest: todo) => guest.taskName === form.taskName
+      );
+      if (check) {
+        setIsValid(false);
+      } else {
+        setIsValid(true);
       }
-    } catch (err) {
-      console.error(err, "aldaa");
-    } finally {
-      setWaiting(false);
     }
-  };
-  // console.log(form);
-  return loading ? (
+  }, [form.taskName]);
+  useEffect(() => {
+    const doingLordsWork = async () => {
+      try {
+        if (GuestTodos) {
+          if (GuestTodos.guests.length > 0) {
+            const todos: todo[] = GuestTodos.guests;
+            const group1 = todos.filter(
+              (todo) => todo.isDone === true && todo.cancelled === false
+            );
+            const group2 = todos.filter(
+              (todo) => todo.isDone !== true && todo.cancelled === false
+            );
+            const group3 = todos.filter((todo) => todo.cancelled === true);
+            setGroupOne(group1);
+            setGroupTwo(group2);
+            setGroupThree(group3);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setAlert(true);
+
+        setLoading(false);
+      }
+    };
+    doingLordsWork();
+  }, [GuestTodos, refresh]);
+  return loading && loadingGuestTodosQuery ? (
     <div className="fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
       <Loading />
     </div>
   ) : (
     <div className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 ">
-      {!!error ? (
+      {!!errorGuestTodosQuery ? (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={!!error && alert}
-          message={error && error.message}
+          open={!!errorGuestTodosQuery && alert}
+          message={errorGuestTodosQuery && errorGuestTodosQuery.message}
         />
       ) : (
         <>
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={uselessLoading}
+            open={loadingGuestTodosQuery}
             message={"Refreshing!"}
+          />
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={!!errorAddNewGuestTodo && alert}
+            message={errorAddNewGuestTodo && errorAddNewGuestTodo.message}
           />
           <div className="flex justify-around w-full shadow-2xl bg-background fixed top-0">
             <div className="flex items-center gap-4">
               <div>
                 <div> Тавтай морил </div>
                 <span className=" font-bold text-xl">
-                  {response?.userTodo.user.username}
+                  {/* {response?.userTodo.user.username} */}
                 </span>
               </div>
               <div
                 className=" cursor-pointer"
-                onClick={async () => {
-                  setLogout(true);
-                  await Logout();
-                  setLogout(false);
-                  setRefresh(!refresh);
-                }}
+                //   onClick={async () => {
+                //     setLogout(true);
+                //     await Logout();
+                //     setLogout(false);
+                //     setRefresh(!refresh);
+                //   }}
               >
-                {loggingout ? <Loading /> : <HiLogout className="text-2xl" />}
+                {/* {loggingout ? <Loading /> : <HiLogout className="text-2xl" />} */}
               </div>
             </div>
             <div className="flex gap-2.5 items-center">
@@ -221,9 +197,13 @@ export default function Home() {
                     <div>
                       <MuiButton
                         sx={{ color: "black" }}
-                        disabled={addNewLoading}
+                        //   disabled={addNewLoading}
                       >
-                        {addNewLoading ? <Loading /> : "Даалгавар нэмэх"}
+                        {loadingAddNewGuestTodo ? (
+                          <Loading />
+                        ) : (
+                          "Даалгавар нэмэх"
+                        )}
                       </MuiButton>
                     </div>
                   </DialogTrigger>
@@ -286,7 +266,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div>
-                      {loadingTAGS ? (
+                      {false ? (
                         <Loading />
                       ) : (
                         <Select
@@ -318,14 +298,21 @@ export default function Home() {
                         <MuiButton
                           sx={{ color: "black" }}
                           disabled={
-                            addNewLoading ||
+                            !isValid ||
                             form.taskName.length < 5 ||
                             form.description.length < 5 ||
-                            form.tagId.length < 5
+                            form.tagId.length < 5 ||
+                            loadingAddNewGuestTodo
                           }
-                          onClick={addNewTask}
+                          onClick={async () => {
+                            await addNewGuestTodo({
+                              variables: form,
+                              refetchQueries: [{ query: FETCH_TODOS }],
+                            });
+                            setAlert(true);
+                          }}
                         >
-                          {addNewLoading ? <Loading /> : "Нэмэх"}
+                          {loadingAddNewGuestTodo ? <Loading /> : "Нэмэх"}
                         </MuiButton>
                       </div>
                     </DialogClose>

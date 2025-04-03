@@ -9,11 +9,15 @@ import Loading from "./loading";
 import { BsTag } from "react-icons/bs";
 import { TbCancel } from "react-icons/tb";
 import {
+  CANCEL_GUEST_TODO,
   CANCEL_TODO,
+  DONE_GUEST_TODO,
+  EDIT_GUEST_TODO,
   FETCH_TAGS,
+  FETCH_TODOS,
   UPDATE_STATUS,
   UPDATE_TODO,
-} from "../graphql/mutations/mutations";
+} from "../graphql/mutationsQueries/mutations";
 import { calculateTime } from "@/lib/utils";
 import {
   Dialog,
@@ -42,6 +46,11 @@ export default function Card({
   todo: todo;
   setRefresh: Dispatch<SetStateAction<boolean>>;
 }) {
+  const {
+    data: GuestTodos,
+    error: errorGuestTodosQuery,
+    loading: loadingGuestTodosQuery,
+  } = useQuery(FETCH_TODOS);
   const { data, error: errorTAGS, loading: loadingTAGS } = useQuery(FETCH_TAGS);
   // const createdAt = new Date(todo.createdAt).toISOString().split("T")[0];
   // console.log(typeof todo.createdAt);
@@ -52,9 +61,20 @@ export default function Card({
   const [updateStatus, { loading, error }] = useMutation(UPDATE_STATUS);
   const [updateTodo, { loading: loadingUpdateTodo, error: errorUpdateTodo }] =
     useMutation(UPDATE_TODO);
-
+  const [
+    editGuestTodo,
+    { loading: loadingUpdateGuestTodo, error: errorUpdateGuestTodo },
+  ] = useMutation(EDIT_GUEST_TODO);
+  const [
+    CancelGuestTodo,
+    { loading: loadingCancelGuestTodo, error: errorCancelGuestTodo },
+  ] = useMutation(CANCEL_GUEST_TODO);
   const [cancelTodo, { loading: loadingCancelTodo, error: errorCancelTodo }] =
     useMutation(CANCEL_TODO);
+  const [
+    doneGuestTodo,
+    { loading: loadingDoneGuestTodo, error: errorDoneGuestTodo },
+  ] = useMutation(DONE_GUEST_TODO);
   const [form, setForm] = useState<form>({
     taskName: todo.description,
     description: todo.description,
@@ -104,6 +124,16 @@ export default function Card({
       console.error(err, "aldaa");
     }
   };
+  const editGuestTod = async () => {
+    try {
+      const res = await editGuestTodo({
+        variables: { ...form },
+        refetchQueries: [{ query: FETCH_TODOS }],
+      });
+    } catch (err) {
+      console.error(err, "aldaa");
+    }
+  };
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
@@ -128,11 +158,25 @@ export default function Card({
     >
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={(!!error || !!errorCancelTodo) && alert}
+        open={
+          (!!error ||
+            !!errorCancelTodo ||
+            !!errorCancelGuestTodo ||
+            !!errorUpdateGuestTodo ||
+            !!errorTAGS) &&
+          alert
+        }
         message={
           (error && error.message) ||
-          (errorCancelTodo && errorCancelTodo.message)
+          (errorCancelTodo && errorCancelTodo.message) ||
+          (errorCancelGuestTodo && errorCancelGuestTodo.message) ||
+          (errorTAGS && errorTAGS.message)
         }
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={loadingGuestTodosQuery}
+        message={"Түр хүлээнэ үү!"}
       />
       <div className="card-body flex flex-col gap-4">
         <div>
@@ -148,14 +192,23 @@ export default function Card({
         </div>
         {!todo.cancelled ? (
           <div
-            onClick={handleStatus}
+            onClick={async () => {
+              if (todo?.user) {
+                handleStatus();
+              } else {
+                await doneGuestTodo({
+                  variables: { id: todo.id },
+                  refetchQueries: [{ query: FETCH_TODOS }],
+                });
+              }
+            }}
             className="absolute bottom-2 right-2 text-2xl cursor-pointer"
           >
             {todo.isDone ? (
               <div className="text-green-400 text-lg">
                 <LuCircleCheck title="Дууссан даалгавар" />
               </div>
-            ) : loading ? (
+            ) : loadingDoneGuestTodo ? (
               <div className="text-xs">
                 <Loading />
               </div>
@@ -169,14 +222,23 @@ export default function Card({
         {!todo.isDone && !todo.cancelled && (
           <>
             <div
-              onClick={cancelTodoButton}
+              onClick={async () => {
+                if (todo.user) {
+                  cancelTodoButton();
+                } else {
+                  await CancelGuestTodo({
+                    variables: { id: todo.id },
+                    refetchQueries: [{ query: FETCH_TODOS }],
+                  });
+                }
+              }}
               className="absolute top-2 right-2 text-2xl cursor-pointer"
             >
               {todo.cancelled ? (
                 <div className="text-green-400 text-lg">
                   <LuCircleAlert title="Цуцласан" />
                 </div>
-              ) : loading && loadingCancelTodo ? (
+              ) : loadingCancelGuestTodo ? (
                 <div className="text-xs">
                   <Loading />
                 </div>
@@ -291,10 +353,20 @@ export default function Card({
                         form.description.length < 5 ||
                         loadingUpdateTodo
                       }
-                      onClick={editTodo}
+                      onClick={() => {
+                        if (todo?.user !== undefined) {
+                          editTodo();
+                        } else {
+                          editGuestTod();
+                        }
+                      }}
                       className="w-full bg-red-500"
                     >
-                      {loadingUpdateTodo ? <Loading /> : "Засах"}
+                      {loadingUpdateTodo || loadingUpdateGuestTodo ? (
+                        <Loading />
+                      ) : (
+                        "Засах"
+                      )}
                     </Button>
                   </div>
                 </DialogClose>

@@ -10,7 +10,7 @@ import { ImSpinner10 } from "react-icons/im";
 import Loading from "../components/loading";
 import setCookie from "../components/server_action/setCookie";
 import { useRouter } from "next/navigation";
-import { LOGIN_USER } from "../graphql/mutations/mutations";
+import { LOGIN_USER } from "../graphql/mutationsQueries/mutations";
 import Link from "next/link";
 
 type todo = {
