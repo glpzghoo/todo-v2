@@ -182,7 +182,7 @@ export default function Card({
       <div className="card-body flex flex-col gap-4">
         <div>
           <h2 className="card-title font-extrabold text-xl">{todo.taskName}</h2>
-          <div className=" text-xs text-gray-400">
+          <div className="text-xs text-gray-400">
             {calculateTime(todo.createdAt)}
           </div>
         </div>
