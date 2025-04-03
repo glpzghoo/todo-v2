@@ -79,6 +79,16 @@ export type todo = {
   tag: tag;
   user: user;
 };
+export type GuestTodo = {
+  description: string;
+  id: string;
+  isDone: boolean;
+  priority: number;
+  taskName: string;
+  cancelled: boolean;
+  createdAt: string;
+  tag: tag;
+};
 export type tag = {
   name: string;
   id: string;

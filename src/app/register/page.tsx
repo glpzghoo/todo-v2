@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loading from "../components/loading";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER, RESIGSTER } from "../graphql/mutations/mutations";
+import { LOGIN_USER, RESIGSTER } from "../graphql/mutationsQueries/mutations";
 import Link from "next/link";
+import GETJWT from "../components/server_action/getUserInfo";
 
 export default function Register() {
   const [newUser, { loading, error }] = useMutation(RESIGSTER);
@@ -42,6 +43,14 @@ export default function Register() {
     }
   };
   useEffect(() => {
+    const checking = async () => {
+      const jwt = await GETJWT();
+      if (jwt) {
+        router.push("/");
+        return;
+      }
+    };
+    checking();
     if (registerResponse) {
       router.push("/login");
     }
@@ -54,7 +63,10 @@ export default function Register() {
         open={!!error && alert}
         message={error && error.message}
       />
-      <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg">
+      <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg relative">
+        <Link href={`/guests`} className=" absolute top-6 right-6">
+          Зочноор нэвтрэх
+        </Link>
         <div className=" font-semibold text-2xl">Бүртгүүлэх</div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="username">Хэрэглэгчийн нэр</Label>
