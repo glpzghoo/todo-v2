@@ -161,7 +161,7 @@ export default function Home() {
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={uselessLoading}
-            message={"Refreshing!"}
+            message={"Ахин татаж байна!"}
           />
           <div className="flex justify-around w-full shadow-2xl bg-background fixed top-0">
             <div className="flex items-center gap-4">

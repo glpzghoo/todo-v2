@@ -30,6 +30,8 @@ import {
   FETCH_TAGS,
   FETCH_TODOS,
 } from "../graphql/mutationsQueries/mutations";
+import GETJWT from "../components/server_action/getUserInfo";
+import Link from "next/link";
 
 export default function Guest() {
   const {
@@ -50,6 +52,7 @@ export default function Guest() {
   const [isValid, setIsValid] = useState(true);
   const [expand2, setExpand2] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [warning, setWarning] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
   const [groupOne, setGroupOne] = useState<todo[]>([]);
@@ -75,6 +78,27 @@ export default function Guest() {
       clearTimeout(timeout);
     };
   }, [alert]);
+  useEffect(() => {
+    const checking = async () => {
+      const jwt = await GETJWT();
+      if (jwt) {
+        router.push(`/`);
+      }
+    };
+    checking();
+    const firstTimeWarning = localStorage.getItem("warned");
+    if (firstTimeWarning) return;
+    setWarning(true);
+    localStorage.setItem("warned", JSON.stringify({ warned: true }));
+  }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setWarning(false);
+    }, 6000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [warning]);
   useEffect(() => {
     if (GuestTodos?.guests?.length > 0) {
       const check = GuestTodos.guests.some(
@@ -132,19 +156,40 @@ export default function Guest() {
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={loadingGuestTodosQuery}
-            message={"Refreshing!"}
+            message={"Ахин татаж байна!"}
           />
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={!!errorAddNewGuestTodo && alert}
             message={errorAddNewGuestTodo && errorAddNewGuestTodo.message}
           />
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={warning}
+            message={
+              "Нэг удаагийн сануулга: Зочны горимд таны даалгавруудыг бусад зочид өөрчилж, устгаж болно."
+            }
+          />
           <div className="flex justify-around w-full shadow-2xl bg-background fixed top-0">
-            <div className="flex items-center gap-4">
-              <div>
-                <div> Тавтай морил </div>
+            <div className="flex items-center gap-4 w-1/12  whitespace-nowrap">
+              <div className="">
+                <div>
+                  {new Date().getHours() < 4
+                    ? "Үдшийн мэнд!"
+                    : new Date().getHours() < 10
+                    ? "Өглөөний мэнд!"
+                    : new Date().getHours() < 17
+                    ? "Өдрийн мэнд!"
+                    : new Date().getHours() < 22
+                    ? "Оройн мэнд!"
+                    : "Үдшийн мэнд!"}
+                </div>
                 <span className=" font-bold text-xl">
-                  {/* {response?.userTodo.user.username} */}
+                  Таны нэвтрээгүй байна!
+                  <Link href="/login" className=" text-red-300">
+                    Энд дарж
+                  </Link>
+                  нэвтрэнэ үү!
                 </span>
               </div>
               <div

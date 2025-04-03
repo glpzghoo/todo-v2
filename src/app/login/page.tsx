@@ -12,6 +12,7 @@ import setCookie from "../components/server_action/setCookie";
 import { useRouter } from "next/navigation";
 import { LOGIN_USER } from "../graphql/mutationsQueries/mutations";
 import Link from "next/link";
+import GETJWT from "../components/server_action/getUserInfo";
 
 type todo = {
   description: string;
@@ -67,6 +68,14 @@ export default function Login() {
     }
   };
   useEffect(() => {
+    const checking = async () => {
+      const jwt = await GETJWT();
+      if (jwt) {
+        router.push("/");
+        return;
+      }
+    };
+    checking();
     redirect();
   }, [loginResponse]);
   async function redirect() {
@@ -82,7 +91,10 @@ export default function Login() {
         open={!!error && alert}
         message={error && error.message}
       />
-      <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg">
+      <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg relative">
+        <Link href={`/guests`} className=" absolute top-6 right-6">
+          Зочноор нэвтрэх
+        </Link>
         <div className=" font-semibold text-2xl">Нэвтрэх</div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="username">Хэрэглэгчийн нэр</Label>

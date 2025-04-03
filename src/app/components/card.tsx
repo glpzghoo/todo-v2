@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Loading from "./loading";
 import { BsTag } from "react-icons/bs";
 import { TbCancel } from "react-icons/tb";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
   CANCEL_GUEST_TODO,
   CANCEL_TODO,
@@ -186,9 +187,30 @@ export default function Card({
           </div>
         </div>
         <p>{todo.description}</p>
-        <div className="absolute bottom-2 left-4 text-gray-400 text-sm flex items-center gap-1">
+        <div className="absolute bottom-2 left-4 text-gray-400 text-xs flex items-center gap-1">
           <BsTag />
           <div>{todo.tag.name}</div>
+        </div>
+        <div
+          title={`"Хэр чухал даалгавар вэ?" хэмжээс`}
+          className="pt-4 absolute left-0 right-0 bottom-0 w-full"
+        >
+          <LinearProgress
+            color={
+              todo.priority === 1
+                ? "inherit"
+                : todo.priority === 2
+                ? "error"
+                : todo.priority === 3
+                ? "secondary"
+                : todo.priority === 4
+                ? "primary"
+                : "success"
+            }
+            variant="determinate"
+            value={todo.priority * 20}
+            sx={{ bgcolor: "pink", borderColor: "green" }}
+          />
         </div>
         {!todo.cancelled ? (
           <div
@@ -213,7 +235,7 @@ export default function Card({
                 <Loading />
               </div>
             ) : (
-              <div className=" text-pink-400 text-sm">Дуусгах!</div>
+              <div className=" text-green-400 text-sm">Дуусгах!</div>
             )}
           </div>
         ) : (
