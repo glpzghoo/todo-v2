@@ -77,7 +77,7 @@ export default function Card({
     { loading: loadingDoneGuestTodo, error: errorDoneGuestTodo },
   ] = useMutation(DONE_GUEST_TODO);
   const [form, setForm] = useState<form>({
-    taskName: todo.description,
+    taskName: todo.taskName,
     description: todo.description,
     tagId: todo.tag.id,
     priority: todo.priority,
