@@ -146,12 +146,14 @@ export default function Guest() {
   ) : (
     <div className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 ">
       {!!errorGuestTodosQuery ? (
-        <div>
-          <div>{`Сервэр унтраалттай байгаа бололтой :(`}</div>
+        <div className=" justify-center flex min-h-screen items-center">
+          <div>{`Сервэр 7-22 цагт асна. Сайхан амраарай!`}</div>
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={!!errorGuestTodosQuery}
-            message={errorGuestTodosQuery && errorGuestTodosQuery.message}
+            message={
+              errorGuestTodosQuery && "Сервер унтраалттай байгаа бололтой!"
+            }
           />
         </div>
       ) : (
