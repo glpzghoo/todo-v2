@@ -144,7 +144,10 @@ export default function Guest() {
       <Loading />
     </div>
   ) : (
-    <div className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 ">
+    <div
+      data-cy="whole-div"
+      className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 "
+    >
       {!!errorGuestTodosQuery ? (
         <div className=" justify-center flex min-h-screen items-center">
           <div>{`Дараа ахин оролдоно уу! :(`}</div>
@@ -246,6 +249,7 @@ export default function Guest() {
                   <DialogTrigger asChild>
                     <div>
                       <MuiButton
+                        id="add-guest-todo"
                         sx={{ color: "black" }}
                         //   disabled={addNewLoading}
                       >
@@ -300,6 +304,7 @@ export default function Guest() {
                         {[...Array(5)].map((a, i) => (
                           <div key={i} className="flex">
                             <Checkbox
+                              id={`${i}`}
                               checked={i + 1 === form.priority}
                               onChange={(e) =>
                                 setForm((prev) => {
@@ -330,12 +335,16 @@ export default function Guest() {
                           }}
                           value={form.tagId}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger data-cy="tag-trigger">
                             <SelectValue placeholder="Tag сонгоно уу!" />
                           </SelectTrigger>
                           <SelectContent className="w-[200px]">
                             {tags.map((tag) => (
-                              <SelectItem key={tag.id} value={tag.id}>
+                              <SelectItem
+                                key={tag.id}
+                                value={tag.id}
+                                data-cy="tag-option"
+                              >
                                 {tag.name}
                               </SelectItem>
                             ))}
@@ -346,6 +355,7 @@ export default function Guest() {
                     <DialogClose asChild>
                       <div className="w-full flex justify-center">
                         <MuiButton
+                          data-cy="add-guest-todo-submit"
                           sx={{ color: "black" }}
                           disabled={
                             !isValid ||

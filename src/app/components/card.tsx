@@ -235,7 +235,12 @@ export default function Card({
                 <Loading />
               </div>
             ) : (
-              <div className=" text-green-400 text-sm">Дуусгах!</div>
+              <div
+                data-cy="done-guest-todo-button"
+                className=" text-green-400 text-sm"
+              >
+                Дуусгах!
+              </div>
             )}
           </div>
         ) : (
@@ -282,7 +287,9 @@ export default function Card({
             </div>
             <Dialog>
               <DialogTrigger className="flex justify-center" asChild>
-                <Muibutton sx={{ color: "red" }}>Засах</Muibutton>
+                <Muibutton data-cy="todo-zasah-tocch" sx={{ color: "red" }}>
+                  Засах
+                </Muibutton>
               </DialogTrigger>
               <DialogContent>
                 <DialogTitle>
@@ -291,6 +298,7 @@ export default function Card({
                 <div>
                   <Label htmlFor="taskName">Даалгаврын нэр?</Label>
                   <Input
+                    data-cy="zochnii-todo-ner-zasah"
                     onChange={(e) => {
                       setForm((prev) => {
                         return {
@@ -306,6 +314,7 @@ export default function Card({
                 <div>
                   <Label htmlFor="description">Тайлбар</Label>
                   <Textarea
+                    data-cy="zochnii-todo-desc-zasah"
                     onChange={(e) => {
                       setForm((prev) => {
                         return {
@@ -324,6 +333,7 @@ export default function Card({
                     {[...Array(5)].map((a, i) => (
                       <div key={i} className="flex">
                         <Checkbox
+                          data-cy="zochnii-todo-prio-solih"
                           onChange={() => {
                             setForm((p) => {
                               return {
@@ -355,11 +365,18 @@ export default function Card({
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Tag сонгоно уу!" />
+                        <SelectValue
+                          data-cy="zohcnii-todo-tag-solih-trigger"
+                          placeholder="Tag сонгоно уу!"
+                        />
                       </SelectTrigger>
                       <SelectContent className="w-[200px]">
                         {tags.map((tag) => (
-                          <SelectItem key={tag.id} value={tag.id}>
+                          <SelectItem
+                            data-cy="zochnii-todo-tag-solih"
+                            key={tag.id}
+                            value={tag.id}
+                          >
                             {tag.name}
                           </SelectItem>
                         ))}
@@ -370,6 +387,7 @@ export default function Card({
                 <DialogClose asChild>
                   <div className="w-full">
                     <Button
+                      data-cy="zochnii-todo-solih-tovch"
                       disabled={
                         form.taskName.length < 5 ||
                         form.description.length < 5 ||

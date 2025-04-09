@@ -92,7 +92,11 @@ export default function Login() {
         message={error && error.message}
       />
       <div className="flex flex-col w-4/5 sm:w-2/5 xl:w-1/5 gap-8 p-15 bg-secondary shadow-2xl rounded-lg relative">
-        <Link href={`/guests`} className=" absolute top-6 right-6">
+        <Link
+          id="login-guest"
+          href={`/guests`}
+          className=" absolute top-6 right-6"
+        >
           Зочноор нэвтрэх
         </Link>
         <div className=" font-semibold text-2xl">Нэвтрэх</div>
@@ -134,6 +138,7 @@ export default function Login() {
         </div>
         <div className=" flex justify-center">
           <Button
+            type="submit"
             onClick={handleLogin}
             disabled={username.length < 8 || password.length < 8 || loading}
             className={`w-full ${
