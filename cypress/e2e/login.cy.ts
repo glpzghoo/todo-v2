@@ -1,24 +1,7 @@
-import { first } from "lodash";
-
-describe("My First Test", () => {
-  console.log(
-    "checking env",
-    process.env.DATABASE_URL,
-    process.env.NEXT_PUBLIC_BACKEND_URL
-  );
+describe("guest todo section", () => {
   it("nevtreegui hereglegch /login luu shuud oroh ystoi", () => {
     cy.visit("http://localhost:3000");
     cy.contains("Нэвтрэх");
-  });
-  it("nevreh shalgalt", () => {
-    cy.visit("/login");
-    cy.contains("Нэвтрэх");
-    cy.get('input[id="username"]').type("glpzghoo");
-    cy.get('input[id="password"]').type("passwordmagic");
-    cy.get('button[type="submit"]').click();
-    cy.contains("Түр хүлээнэ үү!");
-    cy.contains("Түр хүлээнэ үү!");
-    cy.contains("Тавтай морил");
   });
   it("zochnoor orj todo nemj, zasah, tolov oorchloh", () => {
     cy.visit("/");
@@ -48,5 +31,20 @@ describe("My First Test", () => {
     cy.get(`[data-cy="done-guest-todo-button"]`).first().click();
     cy.contains(`Түр хүлээнэ үү!`);
     cy.get(`[data-cy="whole-div"]`).should("not.contain", taksName);
+  });
+});
+describe("user todo section", () => {
+  beforeEach(() => {
+    cy.visit("/login");
+    cy.contains("Нэвтрэх");
+    cy.get('input[id="username"]').type("glpzghoo");
+    cy.get('input[id="password"]').type("passwordmagic");
+    cy.get('button[type="submit"]').click();
+    cy.contains("Түр хүлээнэ үү!");
+    cy.contains("Түр хүлээнэ үү!");
+    cy.contains("Тавтай морил");
+  });
+  it("shine todo nemeh", () => {
+    cy.contains("Даалгавар нэмэх").click();
   });
 });
