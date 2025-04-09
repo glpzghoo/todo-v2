@@ -1,6 +1,11 @@
 import { first } from "lodash";
 
 describe("My First Test", () => {
+  console.log(
+    "checking env",
+    process.env.DATABASE_URL,
+    process.env.NEXT_PUBLIC_BACKEND_URL
+  );
   it("nevtreegui hereglegch /login luu shuud oroh ystoi", () => {
     cy.visit("http://localhost:3000");
     cy.contains("Нэвтрэх");
