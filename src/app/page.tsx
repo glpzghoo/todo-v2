@@ -151,11 +151,14 @@ export default function Home() {
   ) : (
     <div className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 ">
       {!!error ? (
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={!!error && alert}
-          message={error && error.message}
-        />
+        <div className=" justify-center flex min-h-screen items-center">
+          <div>{`Дараа ахин оролдоно уу! :(`}</div>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={!!error && alert}
+            message={error && "Сервер унтраалттай байгаа бололтой!"}
+          />
+        </div>
       ) : (
         <>
           <Snackbar

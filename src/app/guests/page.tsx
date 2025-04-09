@@ -147,7 +147,7 @@ export default function Guest() {
     <div className="min-h-screen bg-secondary w-full flex flex-col items-center p-10 ">
       {!!errorGuestTodosQuery ? (
         <div className=" justify-center flex min-h-screen items-center">
-          <div>{`Сервэр 7-22 цагт асна. Сайхан амраарай!`}</div>
+          <div>{`Дараа ахин оролдоно уу! :(`}</div>
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={!!errorGuestTodosQuery}
