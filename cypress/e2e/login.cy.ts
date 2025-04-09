@@ -17,6 +17,7 @@ describe("My First Test", () => {
     cy.get('input[id="password"]').type("passwordmagic");
     cy.get('button[type="submit"]').click();
     cy.contains("Түр хүлээнэ үү!");
+    cy.contains("Түр хүлээнэ үү!");
     cy.contains("Тавтай морил");
   });
   it("zochnoor orj todo nemj, zasah, tolov oorchloh", () => {
